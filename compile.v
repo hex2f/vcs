@@ -35,9 +35,9 @@ fn (j CompilationJob) get_ext_path(ext string) string {
 fn (j CompilationJob) compile() {
 	v_res := os.exec('v -o ${j.get_ext_path('c')} ${j.get_ext_path('v')}') or { panic(err) }
 	println(v_res.str())
-	clang_res := os.exec('clang -w -O3 -D__linux__ \
+	clang_res := os.exec('./wasi-sdk-12.0/bin/clang -w -O3 -D__linux__ \
 	-target wasm32-unknown-wasi \
-	--sysroot "./wasi-sysroot" \
+	--sysroot "./wasi-sdk-12.0/share/wasi-sysroot" \
 	-D_WASI_EMULATED_SIGNAL \
 	-lwasi-emulated-signal \
 	-Iinclude \
