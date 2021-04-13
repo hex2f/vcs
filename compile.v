@@ -2,6 +2,7 @@ module main
 
 import os
 import rand
+import encoding.base64
 
 struct CompilationJob {
 	id	 		string
@@ -42,9 +43,14 @@ fn (j CompilationJob) compile() {
 	-lwasi-emulated-signal \
 	-Iinclude \
 	-Wl,--allow-undefined \
-	-o $j.path/compiled.wasm \
+	-o ${j.get_ext_path('wasm')} \
 	${j.get_ext_path('c')} placeholders.c') or { panic(err) }
 	println(clang_res.str())
+}
+
+fn (j CompilationJob) encode() ?string {
+	bytes := os.read_bytes(j.get_ext_path('wasm')) or { return error('failed to read wasm') }
+	return base64.encode(bytes)
 }
 
 fn (j CompilationJob) cleanup() ? {

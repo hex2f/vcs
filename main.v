@@ -19,8 +19,9 @@ fn main() {
 pub fn (mut app App) index() vweb.Result {
 	j := new_compilation_job(app.query['code']) or { return app.text(err.msg) }
 	j.compile()
+	wasm := j.encode() or { return app.text(err.msg) }
 	j.cleanup() or { return app.text(err.msg) }
-	return app.text(j.str())
+	return app.text(wasm)
 }
 
 [post]
